@@ -2,7 +2,7 @@
 %   Set up paths, connect to the NXT and initialize joystick
 
 % Add the paths to files which this script depend upon
-SetPaths('RWTHMindstormsNXT', 'Joystick', 'Diamond');
+SetPaths('RWTHMindstormsNXT', 'joymex2', 'Diamond');
 
 % Connect to the NXT
 NXTConnect();
