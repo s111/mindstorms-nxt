@@ -40,5 +40,5 @@ function ret = CartesianToDiamond(cart, radius)
     rightIntersect = GetIntersection(cart, right, [0 radius], [radius 0]);
     rightScale = (rightIntersect(2) - (radius / 2)) * 2;
     
-    ret = [leftScale rightScale];
+    ret = struct('left', leftScale, 'right', rightScale);
 end

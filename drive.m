@@ -29,8 +29,8 @@ while running
     
     % set the power of the motors and make sure it stays within the
     % intervall [-100, 100]
-    motorB.Power = max(min(int8(power(2)), 100), -100);
-    motorC.Power = max(min(int8(power(1)), 100), -100);
+    motorB.Power = max(min(int8(power.right), 100), -100);
+    motorC.Power = max(min(int8(power.left), 100), -100);
     
     % tell the nxt to set the power to the values set above
     motorB.SendToNXT();
