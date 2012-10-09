@@ -2,7 +2,7 @@
 % script for steering the nxt
 
 % initialize nxt and joystick
-nxtInit
+%nxtInit
 
 running = true;
 
@@ -18,7 +18,7 @@ while running
     
     % reduces the turn speed, the higher ts, the greater the turn speed is
     % reduced
-    ts = int8((100 - joystick.axes.throttle)/600) + 1;
+    ts = fix(3*(100 - joystick.axes.throttle)/200) + 1;
 
     % get the actual axes values and apply some deadzone
     x = AddDeadzone(joystick.axes.rudder, 5)/ts;
@@ -46,4 +46,4 @@ motorB.Stop;
 motorC.Stop;
 
 % Disconnect from the NXT and release joystick
-nxtCleanup
+%nxtCleanup

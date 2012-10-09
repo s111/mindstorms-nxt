@@ -5,7 +5,8 @@
 SetPaths('RWTHMindstormsNXT', 'joymex2', 'Diamond');
 
 % Connect to the NXT
-NXTConnect();
+handleNXT = NXTConnect();
+COM_SetDefaultNXT(handleNXT);
 
 % Initialize joystick
 joymex2('open', 0);
