@@ -10,9 +10,54 @@ running = true;
 motorB = NXTMotor('B', 'SmoothStart', true);
 motorC = NXTMotor('C', 'SmoothStart', true);
 
+% initialize the light sensor
+OpenLight(SENSOR_3, 'active');
+
+% the center of the race track
+center = GetLight(SENSOR_3);
+% the last light value
+lLast = center;
+% the last 3 light values
+uLight = [center center center];
+
+% will contain the final area calculated
+area = 0;
+
+% stores the start time for use with toc (toc will return the time elapsed
+% since tic was run
+tStart = tic();
+% the time in seconds since tStart when the last measurement was done
+tLast = 0;
+
 % take input from joystick and drive the NXT around as long as the var
 % running = true
 while running
+    % read the value from the light sensor
+    light = GetLight(SENSOR_3);
+    
+    uLight = [light uLight(1:2)];
+    
+    light = filterLight(uLight);
+    
+    % value from the light sensor seen from the center value
+    cLight = light - center;
+    
+    % the time in seconds since tStart
+    tNew = toc(tStart);
+    % the time in seconds since the last measurement
+    dt = tNew - tLast;
+    % update the timing of the last measurement
+    tLast = tNew;
+    
+    % update the area
+    area = area + dt*cLight;
+    
+    % the derivative
+    deriv = (light - lLast)/dt;
+    
+    % update the last light value
+    lLast = light;
+
     % get data from joystick
     joystick = JoyStruct(joymex2('query',0));
     
@@ -44,6 +89,9 @@ end
 % the motors are still running
 motorB.Stop;
 motorC.Stop;
+
+% close the light sensor
+CloseSensor(SENSOR_3);
 
 % Disconnect from the NXT and release joystick
 %nxtCleanup
