@@ -25,8 +25,8 @@ while running
     y = AddDeadzone(-joystick.axes.stickY, 5);
     
     % trying some exponential growth on the joystick input
-    x = (-sign(x)*(-100/ts)*abs(x)^2/(100/ts)^2)/100;
-    y = (-sign(y)*-100*abs(y)^2/100^2)/100;
+    x = (-sign(x)*(-100/ts)*abs(x)^3/(100/ts)^3)/100;
+    y = (-sign(y)*-100*abs(y)^3/100^3)/100;
     
     xCircle = x * sqrt(1 - 0.5*y^2);
     yCircle = y * sqrt(1 - 0.5*x^2);
@@ -34,9 +34,14 @@ while running
 	% rotate points by 45 degrees
     nR = (yCircle - xCircle)/sqrt(2);
     nL = (xCircle + yCircle)/sqrt(2);
-
-    motorB.Power = max(min(int8(nR*100), 100), -100);
-    motorC.Power = max(min(int8(nL*100), 100), -100);
+    
+    % make sure that nR and nL is between -100 and 100. For some reason the
+    % wheels spin at a slower rate if the power is not given as a double
+    nR = double(max(min(int8(nR*100), 100), -100));
+    nL = double(max(min(int8(nL*100), 100), -100));
+    
+    motorB.Power = nR;
+    motorC.Power = nL;
     
     % tell the nxt to set the power to the values set above
     motorB.SendToNXT();
@@ -48,6 +53,7 @@ end
 
 % stop the motors in case you decide to jump out of the while loop while
 % the motors are still running
+pause(0.1);
 motorB.Stop;
 motorC.Stop;
 
