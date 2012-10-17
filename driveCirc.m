@@ -24,24 +24,16 @@ while running
     x = AddDeadzone(joystick.axes.rudder, 5)/ts;
     y = AddDeadzone(-joystick.axes.stickY, 5);
     
-    xCircle = x/100 * sqrt(1 - 0.5*(y/100)^2);
-    yCircle = y/100 * sqrt(1 - 0.5*(x/100)^2);
+    % trying some exponential growth on the joystick input
+    x = (-sign(x)*(-100/ts)*abs(x)^2/(100/ts)^2)/100;
+    y = (-sign(y)*-100*abs(y)^2/100^2)/100;
     
-    % convert x and y to diamond coordinates
-    %power = CartesianToDiamond([x y], 100);
-    
-    % set the power of the motors and make sure it stays within the
-    % intervall [-100, 100]
-    %motorB.Power = max(min(int8(power.right), 100), -100);
-    %motorC.Power = max(min(int8(power.left), 100), -100);
+    xCircle = x * sqrt(1 - 0.5*y^2);
+    yCircle = y * sqrt(1 - 0.5*x^2);
     
 	% rotate points by 45 degrees
     nR = (yCircle - xCircle)/sqrt(2);
     nL = (xCircle + yCircle)/sqrt(2);
-	
-	% trying some exponential growth on the steering to give more control on small values from the joystick
-	nR = sign(nR) * 100 * abs(nR)^1.4/100^1.4;
-	nL = sign(nL) * 100 * abs(nL)^1.4/100^1.4;
 
     motorB.Power = max(min(int8(nR*100), 100), -100);
     motorC.Power = max(min(int8(nL*100), 100), -100);
