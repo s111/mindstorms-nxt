@@ -35,9 +35,14 @@ while running
     %motorB.Power = max(min(int8(power.right), 100), -100);
     %motorC.Power = max(min(int8(power.left), 100), -100);
     
-    nR = yCircle*cos(pi/4) - xCircle*sin(pi/4);
-    nL = xCircle*cos(pi/4) + yCircle*sin(pi/4);
-    
+	% rotate points by 45 degrees
+    nR = (yCircle - xCircle)/sqrt(2);
+    nL = (xCircle + yCircle)/sqrt(2);
+	
+	% trying some exponential growth on the steering to give more control on small values from the joystick
+	nR = sign(nR) * 100 * abs(nR)^1.4/100^1.4;
+	nL = sign(nL) * 100 * abs(nL)^1.4/100^1.4;
+
     motorB.Power = max(min(int8(nR*100), 100), -100);
     motorC.Power = max(min(int8(nL*100), 100), -100);
     
