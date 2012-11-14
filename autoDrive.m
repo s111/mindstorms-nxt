@@ -1,4 +1,4 @@
-%DRIVE script
+%AUTODRIVE script
 % Script for steering the NXT
 
 % If the project hasn't been initialized, initialize it
@@ -18,9 +18,6 @@ sLight.all = [sLight.center sLight.center sLight.center];
 % Make a struct to keep track of time
 sTime = struct('start', tic(), 'last', 0, 'new', 0, 'dt', 0);
 
-% Make a struct to hold the x and y values from the joystick
-sJoy = struct('x', 0, 'y', 0, 'xc', 0, 'yc', 0);
-
 % Make a struct to keep track of the integral
 sInt = struct('current', 0, 'total', 0);
 
@@ -30,6 +27,9 @@ running = true;
 % Set to true if you wanna filter the light values
 USE_FILTER = false;
 
+% The base power of the motors
+VEL = 15;
+
 % Take input from joystick to control the NXT and calculate the integral
 while running
 	% Get input from joystick
@@ -37,8 +37,8 @@ while running
 	
 	% if button 6 is held down, break out of the while loop
 	running = ~joystick.buttons(6);
-    
-    % Get the current light reading
+
+	% Get the current light reading
 	sLight.current = GetLight(SENSOR_3);
     
     % Store the current light value
@@ -53,7 +53,7 @@ while running
             sLight.current = sLight.current*0.6 + sLight.last_filter*0.4;
         end
     end
-    
+	
 	% The time in seconds since sTime.start
 	sTime.new = toc(sTime.start);
 	sTime.dt = sTime.new - sTime.last;
@@ -61,35 +61,17 @@ while running
 	
 	% Add the current integral. dt*distance from center
     sInt.current = sTime.dt*(sLight.current - sLight.center);
-	sInt.total = sInt.total + abs(sInt.current);
+    sInt.total = sInt.total + abs(sInt.current);
     
     % Calculate the derivative
     %deriv = (sLight.current - sLight.last)/sTime.dt;
     
     % Update last light reading
     sLight.last = sLight.current;
-	
-	% Reduces the turn speed, the higher ts, the greater the turn speed is
-	% reduced
-	turn_speed = fix(3*(-joystick.axes.throttle + 1)/2) + 1;
-	
-	% Get the actual axes values and apply some deadzone
-    sJoy.x = deadzone(joystick.axes.rudder, 0.05)/turn_speed;
-    sJoy.y = deadzone(-joystick.axes.stickY, 0.05);
-	
-	% Map the coordinates returned by the joystick to a circle
-	sJoy.xc = sJoy.x * sqrt(1 - 0.5*sJoy.y^2);
-    sJoy.yc = sJoy.y * sqrt(1 - 0.5*sJoy.x^2);
     
-    % Rotate these points by 45 degrees so that we can directly apply the
-    % values to each of the motors
-    sJoy.xc = (sJoy.yc - sJoy.xc)/sqrt(2);
-    sJoy.yc = (sJoy.xc + sJoy.yc)/sqrt(2);
-	
-	% Multiply by 100, then apply max and min values
-	% This should give us powers from -100 to 100
-	motors.B.Power = double(max(min(int8((sJoy.xc)*100), 100), -100));
-    motors.C.Power = double(max(min(int8((sJoy.yc)*100), 100), -100));
+    % set the motor power based on the distance from the center
+    motors.B.Power = max(min(VEL + int8(sInt.current*10), 100), -100);
+    motors.C.Power = max(min(VEL - int8(sInt.current*10), 100), -100);
 	
 	% Tell the nxt to set the power to the values set above
 	motors.B.SendToNXT();
@@ -97,7 +79,7 @@ while running
 end
 
 % calculate the score
-score = area + sTime.last;
+score = sInt.total + sTime.last;
 
 % Stop the motors in case you decide to jump out of the while loop while
 % the motors are still running
