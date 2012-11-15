@@ -19,4 +19,4 @@ motors = struct('b', motor_b, 'c', motor_c);
 joymex2('open', 0);
 
 % Tell matlab that this script has been run
-initialized = true;
+INITIALIZED = true;
