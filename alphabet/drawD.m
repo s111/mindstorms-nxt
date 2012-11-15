@@ -1,0 +1,14 @@
+turn(-90);
+liftPen();
+drive(100);
+turn(90);
+drive(25);
+turn(atand(25/50));
+drive(sqrt(25^2+50^2));
+turn(90);
+drive(sqrt(25^2+50^2));
+turn(atand((25/50)));
+drive(25);
+liftPen();
+turn(-180);
+drive(50);
