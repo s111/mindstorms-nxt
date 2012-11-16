@@ -1,10 +1,11 @@
 turn(-90);
 drive(100);
-turn(90 + atand(25/100));
-drive(sqrt(100^2 + 25^2));
-turn(-2*atand(100/25));
+turn(-atand(25/100));
+liftPen();
+drive(-sqrt(100^2 + 25^2));
+turn(180-atand(100/25)*2);
 drive(sqrt(100^2 + 25^2));
 liftPen();
-turn(atand(100/25) + 90);
-drive(100);
-turn(-90);
+turn(-atand(25/100));
+drive(-100);
+turn(90);

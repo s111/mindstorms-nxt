@@ -76,7 +76,11 @@ while running
 	
 	% Get the actual axes values and apply some deadzone
     sJoy.x = deadzone(joystick.axes.rudder, 0.05)/4;
+    % For driving using the throttle. This disables driving backwards
     sJoy.y = deadzone(abs(joystick.axes.throttle - 1)/2, 0.05);
+    % Comment out the above line and uncomment the next if you wanna drive
+    % normal with the stick and rudder
+    % sJoy.x = deadzone(joystick.axes.stickY)/4;
 	
 	% Map the coordinates returned by the joystick to a circle
 	sJoy.xc = sJoy.x * sqrt(1 - 0.5*sJoy.y^2);
