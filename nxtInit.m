@@ -18,7 +18,7 @@ global motors;
 motors = struct('a', motor_a, 'b', motor_b, 'c', motor_c);
 
 % Initialize joystick
-joymex2('open', 0);
+%joymex2('open', 0);
 
 % Tell matlab that this script has been run
 INITIALIZED = true;

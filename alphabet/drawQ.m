@@ -1,6 +1,7 @@
 turn(-90);
+drive(25);
 liftPen();
-drive(100);
+drive(75);
 turn(90);
 drive(50);
 turn(90);
