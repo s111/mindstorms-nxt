@@ -5,12 +5,11 @@ turn(90);
 drive(50);
 turn(90);
 drive(50);
-turn(-90)
+turn(-90);
 drive(-50);
 liftPen();
-drive(50);
-turn(90);
+drive(25);
+turn(45);
+drive(sqrt(50^2 - 25^2));
 liftPen();
-drive(50);
-liftPen();
-turn(-90);
+turn(-45);
