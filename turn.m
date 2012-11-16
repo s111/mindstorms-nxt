@@ -13,8 +13,8 @@ function turn(d)
     k = sign(d);
     
     % Set the motor powers
-    motors.b.Power = -1*k*10;
-    motors.c.Power = k*10;
+    motors.b.Power = -1*k*20;
+    motors.c.Power = k*20;
 
     % Tell the nxt to drive at this power
     motors.b.SendToNXT();
